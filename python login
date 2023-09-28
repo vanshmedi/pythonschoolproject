@@ -1,0 +1,65 @@
+def show_login_menu():
+    print("---------- Login/Sign up ----------")
+    print("1. Login")
+    print("2. Signup")
+    print("-----------------------------------")
+
+def signup():
+    while True:
+        username = input("Enter a username: ")
+        password = input("Enter a password: ")
+        uid = username + password[0] + username[0]
+        flag = 0
+
+        try:
+            with open("users1.txt", "r") as rfile:
+                user_data = rfile.readlines()
+
+            for user in user_data:
+                data = user.strip().split(",")
+                if len(data) == 3:
+                    stored_username, _, _ = data
+                    if username == stored_username:
+                        print("Username already taken")
+                        flag = 1
+                        break
+
+            if flag == 0:
+                with open("users1.txt", "a") as file:
+                    file.write(username + "," + password + "," + uid + "\n")
+                    print("New user created successfully")
+                break
+        except FileNotFoundError:
+            with open("users1.txt", "w"):
+                pass
+
+def login():
+    username = input("Enter your username: ")
+    password = input("Enter your password: ")
+
+    try:
+        with open("users1.txt", "r") as file:
+            user_data = file.readlines()
+
+        for user in user_data:
+            data = user.strip().split(",")
+            if len(data) == 3:
+                stored_username, stored_password, _ = data
+                if username == stored_username and password == stored_password:
+                    print("Login successful")
+                    return True
+
+        print("Invalid username or password")
+        return False
+    except:
+        print("No users found. Please sign up first.")
+        return False
+
+while True:
+    show_login_menu()
+    ch = int(input("Enter the number corresponding to your choice: "))
+    if ch == 1:
+        if login():
+            break
+    elif ch == 2:
+        signup()
